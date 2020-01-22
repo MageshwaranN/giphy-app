@@ -1,3 +1,6 @@
-<p>
-  list works!
-</p>
+<div class="search-container">
+  <mat-form-field>
+    <input type="search" matInput placeholder="Enter your search query" [formControl]="searchQuery" required>
+    <mat-error *ngIf="searchQuery.invalid">{{getErrorMessage()}}</mat-error>
+  </mat-form-field>
+</div>
