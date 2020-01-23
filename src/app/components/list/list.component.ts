@@ -68,18 +68,18 @@ export class ListComponent implements OnInit, OnDestroy {
       return (index > startingIndex && index <= endingIndex) ? true : false;
     });
 
-    if (this.paginatedGiffs.length === 0) {
+    if (startingIndex !== 0 && startingIndex === this.giffs.length) {
       this.callGiffSearch();
     }
   }
 
   private callGiffSearch() {
     this.giphySearchService.getGiphyList(this.searchQuery.value, this.limit.toString(), this.offset.toString()).subscribe(
-      data => {
-        this.giffs = data.gifs;
+      (data) => {
+        this.giffs = this.giffs.concat(data.gifs);
         this.pagination = data.pagination;
         this.offset = this.offset + this.pagination.count;
-        // set new index and for the page
+        // start from new page location
         this.getData({pageIndex: this.page, pageSize: this.size});
       }
     );
