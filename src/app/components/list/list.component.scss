@@ -1,8 +1,11 @@
 .search-container {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .search-container > * {
-    width: 100%;
-  }
+  display: flex;
+  justify-content: center;
+}
+
+img {
+  max-height: 100px;
+  max-width: 100px;
+  margin-left: 8px;
+  margin-bottom: 8px;
+}

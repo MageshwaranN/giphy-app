@@ -4,3 +4,20 @@
     <mat-error *ngIf="searchQuery.invalid">{{getErrorMessage()}}</mat-error>
   </mat-form-field>
 </div>
+
+<div class="result-container" *ngIf="paginatedGiffs.length > 0">
+    <div fxFill fxLayout="column" fxLayoutAlign="space-between">
+        <div fxLayout="row wrap">
+          <ng-container *ngFor="let giff of paginatedGiffs">
+              <img [src]="giff.url">
+          </ng-container>
+        </div>
+      
+        <mat-paginator [length]="pagination.total_count"
+                      [pageSize]="size"
+                      [pageIndex]="page"
+                      [pageSizeOptions]="[4, 8, 12]"
+                      (page)="getData($event)">
+        </mat-paginator>
+      </div>
+</div>

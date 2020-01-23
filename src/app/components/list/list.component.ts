@@ -1,11 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { debounceTime, filter, skipWhile, map, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, filter, skipWhile, map } from 'rxjs/operators';
 import * as Filter from 'bad-words';
 
 import { validations } from '../../shared/custom-validations/validations';
 import { validationMessages } from '../../shared/custom-validations/validation-messages';
+import { GiphySearchService } from '../../shared/services';
 
 @Component({
   selector: 'giphy-list',
@@ -20,7 +21,17 @@ export class ListComponent implements OnInit, OnDestroy {
   wordFilter;
   validationMessages = validationMessages;
 
-  constructor() { }
+  private limit = 12;
+  private offset = 0;
+
+  public giffs = [];
+  public paginatedGiffs = [];
+  public pagination;
+
+  public page = 0;
+  public size = 4;
+
+  constructor(private readonly giphySearchService: GiphySearchService) { }
 
   ngOnInit() {
     this.searchQuery = new FormControl('', [validations.validSearch]);
@@ -34,9 +45,17 @@ export class ListComponent implements OnInit, OnDestroy {
       skipWhile(value => value === '')
     ).subscribe((query) => {
       if (this.searchQuery.valid) {
-        console.log('non profane words', query.trim());
-        // make api call create service and all
-        // (api.giphy.com/v1/gifs/search?q=puppies&limit=10&offset=0) (header: api_key CdRKiCMbTnt9CkZTZ0lGukSczk6iT4Z6)
+        this.giffs = [];
+        this.pagination = {};
+        this.offset = 0;
+        this.giphySearchService.getGiphyList(query, this.limit.toString(), this.offset.toString()).subscribe(
+          data => {
+            this.giffs = data.gifs;
+            this.pagination = data.pagination;
+            this.offset = this.pagination.count;
+            this.getData({pageIndex: this.page, pageSize: this.size});
+          }
+        );
       }
     });
   }
@@ -44,6 +63,17 @@ export class ListComponent implements OnInit, OnDestroy {
   getErrorMessage() {
     return this.searchQuery.hasError('required') ? this.validationMessages.required() :
       this.searchQuery.hasError('isWordsNotValid') ? this.validationMessages.isWordsValid() : '';
+  }
+
+  getData(obj) {
+    let index = 0;
+    const startingIndex = obj.pageIndex * obj.pageSize;
+    const endingIndex = startingIndex + obj.pageSize;
+
+    this.paginatedGiffs = this.giffs.filter(() => {
+      index++;
+      return (index > startingIndex && index <= endingIndex) ? true : false;
+    });
   }
 
   ngOnDestroy() {
