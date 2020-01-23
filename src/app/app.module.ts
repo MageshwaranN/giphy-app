@@ -9,7 +9,7 @@ import { ListComponent, PageNotFoundComponent } from './components';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule, MatPaginatorModule } from '@angular/material';
+import { MatInputModule, MatPaginatorModule, MatMenuModule, MatToolbarModule } from '@angular/material';
 import { GiphyInterceptor } from './shared/interceptors/giphy-interceptor';
 
 @NgModule({
@@ -27,7 +27,9 @@ import { GiphyInterceptor } from './shared/interceptors/giphy-interceptor';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatMenuModule,
+    MatToolbarModule
   ],
   providers: [
     {

@@ -43,19 +43,12 @@ export class ListComponent implements OnInit, OnDestroy {
       }),
       filter(value => value !== ''),
       skipWhile(value => value === '')
-    ).subscribe((query) => {
+    ).subscribe(() => {
       if (this.searchQuery.valid) {
         this.giffs = [];
         this.pagination = {};
         this.offset = 0;
-        this.giphySearchService.getGiphyList(query, this.limit.toString(), this.offset.toString()).subscribe(
-          data => {
-            this.giffs = data.gifs;
-            this.pagination = data.pagination;
-            this.offset = this.pagination.count;
-            this.getData({pageIndex: this.page, pageSize: this.size});
-          }
-        );
+        this.callGiffSearch();
       }
     });
   }
@@ -74,6 +67,22 @@ export class ListComponent implements OnInit, OnDestroy {
       index++;
       return (index > startingIndex && index <= endingIndex) ? true : false;
     });
+
+    if (this.paginatedGiffs.length === 0) {
+      this.callGiffSearch();
+    }
+  }
+
+  private callGiffSearch() {
+    this.giphySearchService.getGiphyList(this.searchQuery.value, this.limit.toString(), this.offset.toString()).subscribe(
+      data => {
+        this.giffs = data.gifs;
+        this.pagination = data.pagination;
+        this.offset = this.offset + this.pagination.count;
+        // set new index and for the page
+        this.getData({pageIndex: this.page, pageSize: this.size});
+      }
+    );
   }
 
   ngOnDestroy() {
