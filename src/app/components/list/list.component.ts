@@ -21,7 +21,7 @@ export class ListComponent implements OnInit, OnDestroy {
   wordFilter;
   validationMessages = validationMessages;
 
-  private limit = 12;
+  private limit = 100;
   private offset = 0;
 
   public giffs = [];
@@ -29,7 +29,7 @@ export class ListComponent implements OnInit, OnDestroy {
   public pagination;
 
   public page = 0;
-  public size = 4;
+  public size = 10;
 
   constructor(private readonly giphySearchService: GiphySearchService) { }
 
@@ -45,7 +45,9 @@ export class ListComponent implements OnInit, OnDestroy {
       skipWhile(value => value === '')
     ).subscribe(() => {
       if (this.searchQuery.valid) {
+        this.page = 0;
         this.giffs = [];
+        this.paginatedGiffs = [];
         this.pagination = {};
         this.offset = 0;
         this.callGiffSearch();
@@ -69,6 +71,7 @@ export class ListComponent implements OnInit, OnDestroy {
     });
 
     if (startingIndex !== 0 && startingIndex === this.giffs.length) {
+      this.page = obj.pageIndex;
       this.callGiffSearch();
     }
   }
@@ -79,7 +82,6 @@ export class ListComponent implements OnInit, OnDestroy {
         this.giffs = this.giffs.concat(data.gifs);
         this.pagination = data.pagination;
         this.offset = this.offset + this.pagination.count;
-        // start from new page location
         this.getData({pageIndex: this.page, pageSize: this.size});
       }
     );

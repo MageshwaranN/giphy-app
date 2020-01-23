@@ -6,18 +6,13 @@
 </div>
 
 <div class="result-container" *ngIf="paginatedGiffs.length > 0">
-    <div fxFill fxLayout="column" fxLayoutAlign="space-between">
-        <div fxLayout="row wrap">
-          <ng-container *ngFor="let giff of paginatedGiffs">
-              <img [src]="giff.url">
-          </ng-container>
-        </div>
-      
-        <mat-paginator [length]="pagination.total_count"
-                      [pageSize]="size"
-                      [pageIndex]="page"
-                      [pageSizeOptions]="[4, 8, 12]"
-                      (page)="getData($event)">
-        </mat-paginator>
-      </div>
+  <div class="giphys-container">
+    <ng-container *ngFor="let giff of paginatedGiffs">
+      <img [src]="giff.url">
+    </ng-container>
+  </div>
+  <div class="paginator-container">
+    <mat-paginator [length]="pagination.total_count" [pageSize]="size" [pageIndex]="page" [pageSizeOptions]="[10, 15, 25]" (page)="getData($event)">
+    </mat-paginator>
+  </div>
 </div>
