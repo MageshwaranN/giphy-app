@@ -14,6 +14,7 @@ class MockGiphySearchService {
 
 describe('ListComponent', () => {
   let component: ListComponent;
+  let giphyService: GiphySearchService;
   let fixture: ComponentFixture<ListComponent>;
 
   beforeEach(async(() => {
@@ -32,10 +33,51 @@ describe('ListComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ListComponent);
     component = fixture.componentInstance;
+    giphyService = TestBed.get(GiphySearchService);
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should show error on swear words', () => {
+    component.ngOnInit();
+    component.searchQuery.setValue('fuck u');
+    fixture.detectChanges();
+    expect(component.searchQuery.hasError('isWordsNotValid')).toBeTruthy();
+  });
+
+  it('should getData for pagination', () => {
+    spyOn(giphyService, 'getGiphyList').and.returnValue(of({
+      gifs: [],
+      pagination: {
+        total_count: 45800,
+        count: 50,
+        offset: 0
+      },
+      meta: {
+        response_id: '1234567890'
+      }
+    }));
+    component.searchQuery.setValue('puppies');
+    component.getErrorMessage();
+    component.giffs = [{}, {}, {}, {}];
+    component.getData({pageIndex: 0, pageSize: 4});
+    expect(component.paginatedGiffs.length).toEqual(4);
+    component.getData({pageIndex: 1, pageSize: 4});
+    expect(giphyService.getGiphyList).toHaveBeenCalledWith('puppies', '100', '0');
+  });
+
+  it('should call ondestroy on no subscription', () => {
+    component.searchQueryControlSubscription = null;
+    component.ngOnDestroy();
+    fixture.detectChanges();
+  });
+
+  // it('should show giphy list on proper words', () => {
+  //   component.ngOnInit();
+  //   component.searchQuery.setValue('puppies');
+  //   fixture.detectChanges();
+  // });
 });
