@@ -1,14 +1,14 @@
 <div class="search-container">
   <mat-form-field>
-    <input type="search" matInput placeholder="Enter your search query" [formControl]="searchQuery" required>
+    <input type="search" id='searchInput' matInput placeholder="Enter your search query" [formControl]="searchQuery" required>
     <mat-error *ngIf="searchQuery.invalid">{{getErrorMessage()}}</mat-error>
   </mat-form-field>
 </div>
 
 <div class="result-container" *ngIf="paginatedGiffs.length > 0">
   <div class="giphys-container">
-    <ng-container *ngFor="let giff of paginatedGiffs">
-      <img [src]="giff.url">
+    <ng-container *ngFor="let giff of paginatedGiffs; let i = index">
+      <img [id]="i" [src]="giff.url">
     </ng-container>
   </div>
   <div class="paginator-container">
