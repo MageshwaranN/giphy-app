@@ -1,10 +1,11 @@
 {
   "name": "giphy-app",
   "version": "0.0.0",
+  "author": "Mageshwaran Nathan",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --prod --single-bundle true",
     "test": "rm -rf coverage/ && ng test --watch=false --code-coverage --no-progress",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -37,6 +38,7 @@
     "@types/node": "~8.9.4",
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",
+    "ngx-build-plus": "^7.8.3",
     "codelyzer": "~4.5.0",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
