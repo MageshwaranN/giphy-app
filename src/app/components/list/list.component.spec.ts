@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
 
 import { ListComponent } from './list.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
@@ -41,12 +41,12 @@ describe('ListComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should show error on swear words', () => {
-    component.ngOnInit();
+  it('should show error on swear words', fakeAsync(() => {
     component.searchQuery.setValue('fuck u');
     fixture.detectChanges();
+    tick(1000);
     expect(component.searchQuery.hasError('isWordsNotValid')).toBeTruthy();
-  });
+  }));
 
   it('should getData for pagination', () => {
     spyOn(giphyService, 'getGiphyList').and.returnValue(of({
@@ -69,15 +69,27 @@ describe('ListComponent', () => {
     expect(giphyService.getGiphyList).toHaveBeenCalledWith('puppies', '100', '0');
   });
 
+  it('should show giphy list on proper words', fakeAsync(() => {
+    spyOn(giphyService, 'getGiphyList').and.returnValue(of({
+      gifs: [],
+      pagination: {
+        total_count: 45800,
+        count: 50,
+        offset: 0
+      },
+      meta: {
+        response_id: '1234567890'
+      }
+    }));
+    component.searchQuery.patchValue('puppies');
+    fixture.detectChanges();
+    tick(1000);
+    expect(giphyService.getGiphyList).toHaveBeenCalledWith('puppies', '100', '0');
+  }));
+
   it('should call ondestroy on no subscription', () => {
     component.searchQueryControlSubscription = null;
     component.ngOnDestroy();
     fixture.detectChanges();
   });
-
-  // it('should show giphy list on proper words', () => {
-  //   component.ngOnInit();
-  //   component.searchQuery.setValue('puppies');
-  //   fixture.detectChanges();
-  // });
 });
